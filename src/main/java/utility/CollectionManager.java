@@ -257,7 +257,7 @@ public class CollectionManager {
                                 chapterReader.setFromFile(true);
                                 Chapter chapter = chapterReader.readChapter(scanFile);
                                 filterByChapter(chapter);
-                            } catch (IllegalArgumentException e){
+                            } catch (IllegalArgumentException e) {
                                 elementReader.setFromFile(false);
                                 System.out.println("The script file is not correct. Further reading of the script is impossible.\n" +
                                         "Enter \"help\" to get information about available commands.");
