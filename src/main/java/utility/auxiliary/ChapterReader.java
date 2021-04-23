@@ -1,5 +1,7 @@
 package utility.auxiliary;
 
+import content.Chapter;
+
 import java.util.Scanner;
 
 /**
@@ -8,8 +10,8 @@ import java.util.Scanner;
 public class ChapterReader {
     private boolean fromFile = false;
 
-    public String[] readChapter(Scanner sc) {
-        String[] chapter = new String[2];
+    public Chapter readChapter(Scanner sc) throws Exception {
+        String[] fields = new String[2];
         if (!fromFile) {
             boolean isCorrect = false;
             String argument = "";
@@ -22,7 +24,7 @@ public class ChapterReader {
                     isCorrect = true;
                 }
             }
-            chapter[0] = argument;
+            fields[0] = argument;
 
             isCorrect = false;
             while (!isCorrect) {
@@ -34,23 +36,23 @@ public class ChapterReader {
                     isCorrect = true;
                 }
             }
-            chapter[1] = argument;
+            fields[1] = argument;
         } else {
             String argument;
             argument = sc.nextLine().trim();
             if (argument.equals("")) {
                 throw new IllegalArgumentException("Chapter name cannot be empty word.");
             }
-            chapter[0] = argument;
+            fields[0] = argument;
 
             argument = sc.nextLine().trim();
             if (argument.equals("")) {
                 throw new IllegalArgumentException("Chapter world cannot be empty word.");
             }
-            chapter[1] = argument;
+            fields[1] = argument;
         }
         fromFile = false;
-        return chapter;
+        return new Chapter(fields[0], fields[1]);
     }
 
     public void setFromFile(boolean fromFile) {

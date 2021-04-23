@@ -1,5 +1,6 @@
 package utility;
 
+import content.Chapter;
 import content.SpaceMarine;
 import utility.auxiliary.*;
 import utility.parsing.ObjectToXMLParser;
@@ -251,8 +252,8 @@ public class CollectionManager {
                         case "filter_by_chapter":
                             try {
                                 chapterReader.setFromFile(true);
-                                String [] arguments = chapterReader.readChapter(scanFile);
-                                filterByChapter(arguments);
+                                Chapter chapter = chapterReader.readChapter(scanFile);
+                                filterByChapter(chapter);
                             } catch (Exception e){
                                 System.out.println(e.getMessage());
                             }
@@ -384,13 +385,13 @@ public class CollectionManager {
         }
     }
 
-    public void filterByChapter(String[] arguments) {
+    public void filterByChapter(Chapter chapter) {
         try {
             if (treeMap.isEmpty()) {
                 throw new Exception("The collection is empty.");
             }
-            String chapterName = arguments[0];
-            String chapterWorld = arguments[1];
+            String chapterName = chapter.getName();
+            String chapterWorld = chapter.getWorld();
             SpaceMarineDescriber smd = new SpaceMarineDescriber();
             System.out.println("Elements whose chapter value is equal to entered value:");
             System.out.println();

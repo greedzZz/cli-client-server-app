@@ -131,6 +131,10 @@ public class SpaceMarine implements Comparable<SpaceMarine> {
         return meleeWeapon;
     }
 
+    public content.Chapter getChapter() {
+        return chapter;
+    }
+
     public String getChapterName() {
         return chapter.getName();
     }

@@ -1,5 +1,6 @@
 package utility;
 
+import content.Chapter;
 import content.SpaceMarine;
 import utility.auxiliary.ChapterReader;
 import utility.auxiliary.ElementReader;
@@ -133,8 +134,8 @@ public class CommandManager {
                         break;
                     case "filter_by_chapter":
                         try {
-                            String[] arguments = chapterReader.readChapter(scanner);
-                            collectionManager.filterByChapter(arguments);
+                            Chapter chapter = chapterReader.readChapter(scanner);
+                            collectionManager.filterByChapter(chapter);
                         } catch (Exception e){
                             chapterReader.setFromFile(false);
                             System.out.println(e.getMessage());
