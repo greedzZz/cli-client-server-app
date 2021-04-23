@@ -4,6 +4,7 @@ import content.Chapter;
 import content.SpaceMarine;
 import utility.auxiliary.ChapterReader;
 import utility.auxiliary.ElementReader;
+import utility.auxiliary.ScriptReader;
 
 import java.io.File;
 import java.util.Scanner;
@@ -16,11 +17,13 @@ public class CommandManager {
     private final CollectionManager collectionManager;
     private final ElementReader elementReader;
     private final ChapterReader chapterReader;
+    private final ScriptReader scriptReader;
 
     public CommandManager(CollectionManager collectionManager) {
         this.collectionManager = collectionManager;
         this.elementReader = new ElementReader();
         this.chapterReader = new ChapterReader();
+        this.scriptReader = new ScriptReader(collectionManager, elementReader, chapterReader);
     }
 
     public void readInput() {
@@ -88,9 +91,10 @@ public class CommandManager {
                     case "execute_script":
                         try {
                             File file = new File(input[1]);
-                            collectionManager.addScript(file.getAbsolutePath());
-                            collectionManager.executeScript(input[1]);
-                            collectionManager.clearScripts();
+                            scriptReader.addScript(file.getAbsolutePath());
+                            collectionManager.executeScript();
+                            scriptReader.readScript(input[1]);
+                            scriptReader.clearScripts();
                         } catch (ArrayIndexOutOfBoundsException e) {
                             System.out.println("To execute this command, you must enter the required argument.");
                         }
