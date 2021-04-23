@@ -91,11 +91,11 @@ public class ScriptReader {
                             break;
                         case "execute_script":
                             try {
-                                File file1 = new File(input[1]);
-                                if (otherScripts.contains(file1.getAbsolutePath())) {
+                                File nextFile = new File(input[1]);
+                                if (otherScripts.contains(nextFile.getAbsolutePath())) {
                                     throw new Exception("Recursion detected. Further reading of the script is impossible.");
                                 } else {
-                                    otherScripts.add(file.getAbsolutePath());
+                                    otherScripts.add(nextFile.getAbsolutePath());
                                     collectionManager.executeScript();
                                     readScript(input[1]);
                                 }
