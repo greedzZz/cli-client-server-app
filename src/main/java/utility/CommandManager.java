@@ -13,10 +13,9 @@ import java.util.Scanner;
  * Reads user input.
  */
 public class CommandManager {
-    CollectionManager collectionManager;
-    Scanner scanner;
-    ElementReader elementReader;
-    ChapterReader chapterReader;
+    private final CollectionManager collectionManager;
+    private final ElementReader elementReader;
+    private final ChapterReader chapterReader;
 
     public CommandManager(CollectionManager collectionManager) {
         this.collectionManager = collectionManager;
@@ -25,7 +24,7 @@ public class CommandManager {
     }
 
     public void readInput() {
-        scanner = new Scanner(System.in);
+        Scanner scanner = new Scanner(System.in);
         System.out.println("Please, enter a command. (Enter \"help\" to get information about available commands)");
         String command = "";
         while (scanner.hasNextLine() && !command.equals("exit")) {
@@ -137,7 +136,6 @@ public class CommandManager {
                             Chapter chapter = chapterReader.readChapter(scanner);
                             collectionManager.filterByChapter(chapter);
                         } catch (Exception e){
-                            chapterReader.setFromFile(false);
                             System.out.println(e.getMessage());
                         }
                         break;

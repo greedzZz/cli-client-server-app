@@ -218,8 +218,11 @@ public class CollectionManager {
                                 elementReader.setFromFile(true);
                                 SpaceMarine sm = elementReader.readElement(scanFile);
                                 removeGreater(sm);
-                            } catch (Exception e) {
-                                System.out.println(e.getMessage());
+                            } catch (IllegalArgumentException e) {
+                                elementReader.setFromFile(false);
+                                System.out.println("The script file is not correct. Further reading of the script is impossible.\n" +
+                                        "Enter \"help\" to get information about available commands.");
+                                isIncorrect = true;
                             }
 
                             break;
@@ -254,8 +257,11 @@ public class CollectionManager {
                                 chapterReader.setFromFile(true);
                                 Chapter chapter = chapterReader.readChapter(scanFile);
                                 filterByChapter(chapter);
-                            } catch (Exception e){
-                                System.out.println(e.getMessage());
+                            } catch (IllegalArgumentException e){
+                                elementReader.setFromFile(false);
+                                System.out.println("The script file is not correct. Further reading of the script is impossible.\n" +
+                                        "Enter \"help\" to get information about available commands.");
+                                isIncorrect = true;
                             }
                             break;
                         case "filter_starts_with_name":
@@ -406,7 +412,6 @@ public class CollectionManager {
                 System.out.println("There are no elements whose chapter value is equal to entered value.");
             }
         } catch (Exception e) {
-            chapterReader.setFromFile(false);
             System.out.println(e.getMessage());
         }
     }
