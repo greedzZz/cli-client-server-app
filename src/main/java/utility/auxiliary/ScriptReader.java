@@ -1,13 +1,11 @@
 package utility.auxiliary;
 
-import content.Chapter;
-import content.SpaceMarine;
+import commands.*;
+import content.*;
 import utility.CollectionManager;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.LinkedList;
-import java.util.Scanner;
+import java.io.*;
+import java.util.*;
 
 public class ScriptReader {
     private final CollectionManager collectionManager;
@@ -21,7 +19,7 @@ public class ScriptReader {
         this.chapterReader = chapterReader;
     }
 
-    public void readScript(String pathname){
+    public void readScript(String pathname) {
         try {
             File file = new File(pathname);
             Scanner scanFile = new Scanner(file);
@@ -33,13 +31,19 @@ public class ScriptReader {
                 try {
                     switch (command) {
                         case "help":
-                            collectionManager.help();
+                            Command help = new Help();
+                            help.execute(collectionManager);
+                            //collectionManager.help();
                             break;
                         case "info":
-                            collectionManager.info();
+                            Command info = new Info();
+                            info.execute(collectionManager);
+                            //collectionManager.info();
                             break;
                         case "show":
-                            collectionManager.show();
+                            Command show = new Show();
+                            show.execute(collectionManager);
+                            //collectionManager.show();
                             break;
                         case "insert":
                             try {
@@ -49,7 +53,9 @@ public class ScriptReader {
                                 }
                                 elementReader.setFromFile(true);
                                 SpaceMarine sm = elementReader.readElement(scanFile);
-                                collectionManager.insert(key, sm);
+                                Command insert = new Insert(key, sm);
+                                insert.execute(collectionManager);
+                                //collectionManager.insert(key, sm);
                             } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
                                 System.out.println("The script file is not correct. Further reading of the script is impossible.\n" +
                                         "Enter \"help\" to get information about available commands.");
@@ -65,7 +71,9 @@ public class ScriptReader {
                                 }
                                 elementReader.setFromFile(true);
                                 SpaceMarine sm = elementReader.readElement(scanFile);
-                                collectionManager.update(id, sm);
+                                Command update = new Update(id, sm);
+                                update.execute(collectionManager);
+                                //collectionManager.update(id, sm);
                             } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
                                 System.out.println("The script file is not correct. Further reading of the script is impossible.\n" +
                                         "Enter \"help\" to get information about available commands.");
@@ -76,7 +84,9 @@ public class ScriptReader {
                         case "remove_key":
                             try {
                                 Integer key = Integer.parseInt(input[1]);
-                                collectionManager.removeKey(key);
+                                Command removeKey = new RemoveKey(key);
+                                removeKey.execute(collectionManager);
+                                //collectionManager.removeKey(key);
                             } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
                                 System.out.println("The script file is not correct. Further reading of the script is impossible.\n" +
                                         "Enter \"help\" to get information about available commands.");
@@ -84,10 +94,14 @@ public class ScriptReader {
                             }
                             break;
                         case "clear":
-                            collectionManager.clear();
+                            Command clear = new Clear();
+                            clear.execute(collectionManager);
+                            //collectionManager.clear();
                             break;
                         case "save":
-                            collectionManager.save();
+                            Command save = new Save();
+                            save.execute(collectionManager);
+                            //collectionManager.save();
                             break;
                         case "execute_script":
                             try {
@@ -96,7 +110,9 @@ public class ScriptReader {
                                     throw new Exception("Recursion detected. Further reading of the script is impossible.");
                                 } else {
                                     otherScripts.add(nextFile.getAbsolutePath());
-                                    collectionManager.executeScript();
+                                    Command executeScript = new ExecuteScript();
+                                    executeScript.execute(collectionManager);
+                                    //collectionManager.executeScript();
                                     readScript(input[1]);
                                 }
                             } catch (ArrayIndexOutOfBoundsException e) {
@@ -107,13 +123,17 @@ public class ScriptReader {
                             break;
                         case "exit":
                             scanFile.close();
-                            collectionManager.exit();
+                            Command exit = new Exit();
+                            exit.execute(collectionManager);
+                            //collectionManager.exit();
                             break;
                         case "remove_greater":
                             try {
                                 elementReader.setFromFile(true);
                                 SpaceMarine sm = elementReader.readElement(scanFile);
-                                collectionManager.removeGreater(sm);
+                                Command removeGreater = new RemoveGreater(sm);
+                                removeGreater.execute(collectionManager);
+                                //collectionManager.removeGreater(sm);
                             } catch (IllegalArgumentException e) {
                                 elementReader.setFromFile(false);
                                 System.out.println("The script file is not correct. Further reading of the script is impossible.\n" +
@@ -127,7 +147,9 @@ public class ScriptReader {
                                 Integer key = Integer.parseInt(input[1]);
                                 elementReader.setFromFile(true);
                                 SpaceMarine sm = elementReader.readElement(scanFile);
-                                collectionManager.replaceIfGreater(key, sm);
+                                Command replaceIfGreater = new ReplaceIfGreater(key, sm);
+                                replaceIfGreater.execute(collectionManager);
+                                //collectionManager.replaceIfGreater(key, sm);
                             } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
                                 System.out.println("The script file is not correct. Further reading of the script is impossible.\n" +
                                         "Enter \"help\" to get information about available commands.");
@@ -138,7 +160,9 @@ public class ScriptReader {
                         case "remove_greater_key":
                             try {
                                 Integer key = Integer.parseInt(input[1]);
-                                collectionManager.removeGreaterKey(key);
+                                Command removeGreaterKey = new RemoveGreaterKey(key);
+                                removeGreaterKey.execute(collectionManager);
+                                //collectionManager.removeGreaterKey(key);
                             } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
                                 System.out.println("The script file is not correct. Further reading of the script is impossible.\n" +
                                         "Enter \"help\" to get information about available commands.");
@@ -146,13 +170,17 @@ public class ScriptReader {
                             }
                             break;
                         case "group_counting_by_coordinates":
-                            collectionManager.groupCountingByCoordinates();
+                            Command groupCountingByCoordinates = new GroupCountingByCoordinates();
+                            groupCountingByCoordinates.execute(collectionManager);
+                            //collectionManager.groupCountingByCoordinates();
                             break;
                         case "filter_by_chapter":
                             try {
                                 chapterReader.setFromFile(true);
                                 Chapter chapter = chapterReader.readChapter(scanFile);
-                                collectionManager.filterByChapter(chapter);
+                                Command filterByChapter = new FilterByChapter(chapter);
+                                filterByChapter.execute(collectionManager);
+                                //collectionManager.filterByChapter(chapter);
                             } catch (IllegalArgumentException e) {
                                 elementReader.setFromFile(false);
                                 System.out.println("The script file is not correct. Further reading of the script is impossible.\n" +
@@ -162,7 +190,9 @@ public class ScriptReader {
                             break;
                         case "filter_starts_with_name":
                             try {
-                                collectionManager.filterStartsWithName(input[1]);
+                                Command filterStartsWithName = new FilterStartsWithName(input[1]);
+                                filterStartsWithName.execute(collectionManager);
+                                //collectionManager.filterStartsWithName(input[1]);
                             } catch (ArrayIndexOutOfBoundsException e) {
                                 System.out.println("The script file is not correct. Further reading of the script is impossible.\n" +
                                         "Enter \"help\" to get information about available commands.");

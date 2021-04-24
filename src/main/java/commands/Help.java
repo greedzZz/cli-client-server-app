@@ -1,4 +1,10 @@
 package commands;
 
-public class Help {
+import utility.CollectionManager;
+
+public class Help extends Command {
+    @Override
+    public void execute(CollectionManager cm) {
+        cm.help();
+    }
 }

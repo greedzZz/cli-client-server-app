@@ -1,12 +1,10 @@
 package utility;
 
-import content.Chapter;
-import content.SpaceMarine;
+import content.*;
 import utility.auxiliary.*;
 import utility.parsing.ObjectToXMLParser;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.*;
 
 /**
@@ -14,12 +12,9 @@ import java.util.*;
  */
 public class CollectionManager {
     private final IDGenerator idGenerator;
-    private final ElementReader elementReader;
-    private final ChapterReader chapterReader;
     private final TreeMap<Integer, SpaceMarine> treeMap;
     private final Date date;
     private final HashMap<String, String> commandPool = new HashMap<>();
-    private final LinkedList<String> otherScripts = new LinkedList<>();
     private File file;
 
     {
@@ -45,8 +40,6 @@ public class CollectionManager {
         this.date = new Date();
         this.treeMap = new TreeMap<>();
         this.idGenerator = new IDGenerator();
-        this.elementReader = new ElementReader();
-        this.chapterReader = new ChapterReader();
     }
 
     public void help() {
@@ -293,11 +286,4 @@ public class CollectionManager {
         this.file = file;
     }
 
-    public void clearScripts() {
-        otherScripts.clear();
-    }
-
-    public void addScript(String s) {
-        otherScripts.add(s);
-    }
 }

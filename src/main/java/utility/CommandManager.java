@@ -1,10 +1,8 @@
 package utility;
 
-import content.Chapter;
-import content.SpaceMarine;
-import utility.auxiliary.ChapterReader;
-import utility.auxiliary.ElementReader;
-import utility.auxiliary.ScriptReader;
+import commands.*;
+import content.*;
+import utility.auxiliary.*;
 
 import java.io.File;
 import java.util.Scanner;
@@ -36,13 +34,19 @@ public class CommandManager {
             try {
                 switch (command) {
                     case "help":
-                        collectionManager.help();
+                        Command help = new Help();
+                        help.execute(collectionManager);
+                        //collectionManager.help();
                         break;
                     case "info":
-                        collectionManager.info();
+                        Command info = new Info();
+                        info.execute(collectionManager);
+                        //collectionManager.info();
                         break;
                     case "show":
-                        collectionManager.show();
+                        Command show = new Show();
+                        show.execute(collectionManager);
+                        //collectionManager.show();
                         break;
                     case "insert":
                         try {
@@ -51,7 +55,9 @@ public class CommandManager {
                                 throw new NumberFormatException();
                             }
                             SpaceMarine sm = elementReader.readElement(scanner);
-                            collectionManager.insert(key, sm);
+                            Command insert = new Insert(key, sm);
+                            insert.execute(collectionManager);
+                            //collectionManager.insert(key, sm);
                         } catch (ArrayIndexOutOfBoundsException e) {
                             System.out.println("To execute this command, you must enter the required argument.");
                         } catch (NumberFormatException e) {
@@ -65,7 +71,9 @@ public class CommandManager {
                                 throw new NumberFormatException();
                             }
                             SpaceMarine sm = elementReader.readElement(scanner);
-                            collectionManager.update(id, sm);
+                            Command update = new Update(id, sm);
+                            update.execute(collectionManager);
+                            //collectionManager.update(id, sm);
                         } catch (ArrayIndexOutOfBoundsException e) {
                             System.out.println("To execute this command, you must enter the required argument.");
                         } catch (NumberFormatException e) {
@@ -75,7 +83,9 @@ public class CommandManager {
                     case "remove_key":
                         try {
                             Integer key = Integer.parseInt(input[1]);
-                            collectionManager.removeKey(key);
+                            Command removeKey = new RemoveKey(key);
+                            removeKey.execute(collectionManager);
+                            //collectionManager.removeKey(key);
                         } catch (ArrayIndexOutOfBoundsException e) {
                             System.out.println("To execute this command, you must enter the required argument.");
                         } catch (NumberFormatException e) {
@@ -83,16 +93,22 @@ public class CommandManager {
                         }
                         break;
                     case "clear":
-                        collectionManager.clear();
+                        Command clear = new Clear();
+                        clear.execute(collectionManager);
+                        //collectionManager.clear();
                         break;
                     case "save":
-                        collectionManager.save();
+                        Command save = new Save();
+                        save.execute(collectionManager);
+                        //collectionManager.save();
                         break;
                     case "execute_script":
                         try {
                             File file = new File(input[1]);
                             scriptReader.addScript(file.getAbsolutePath());
-                            collectionManager.executeScript();
+                            Command executeScript = new ExecuteScript();
+                            executeScript.execute(collectionManager);
+                            //collectionManager.executeScript();
                             scriptReader.readScript(input[1]);
                             scriptReader.clearScripts();
                         } catch (ArrayIndexOutOfBoundsException e) {
@@ -101,13 +117,17 @@ public class CommandManager {
                         break;
                     case "exit":
                         scanner.close();
-                        collectionManager.exit();
+                        Command exit = new Exit();
+                        exit.execute(collectionManager);
+                        //collectionManager.exit();
                         break;
                     case "remove_greater":
                         try {
                             SpaceMarine sm = elementReader.readElement(scanner);
-                            collectionManager.removeGreater(sm);
-                        } catch (Exception e){
+                            Command removeGreater = new RemoveGreater(sm);
+                            removeGreater.execute(collectionManager);
+                            //collectionManager.removeGreater(sm);
+                        } catch (Exception e) {
                             System.out.println(e.getMessage());
                         }
                         break;
@@ -115,7 +135,9 @@ public class CommandManager {
                         try {
                             Integer key = Integer.parseInt(input[1]);
                             SpaceMarine sm = elementReader.readElement(scanner);
-                            collectionManager.replaceIfGreater(key, sm);
+                            Command replaceIfGreater = new ReplaceIfGreater(key, sm);
+                            replaceIfGreater.execute(collectionManager);
+                            //collectionManager.replaceIfGreater(key, sm);
                         } catch (ArrayIndexOutOfBoundsException e) {
                             System.out.println("To execute this command, you must enter the required argument.");
                         } catch (NumberFormatException e) {
@@ -125,7 +147,9 @@ public class CommandManager {
                     case "remove_greater_key":
                         try {
                             Integer key = Integer.parseInt(input[1]);
-                            collectionManager.removeGreaterKey(key);
+                            Command removeGreaterKey = new RemoveGreaterKey(key);
+                            removeGreaterKey.execute(collectionManager);
+                            //collectionManager.removeGreaterKey(key);
                         } catch (ArrayIndexOutOfBoundsException e) {
                             System.out.println("To execute this command, you must enter the required argument.");
                         } catch (NumberFormatException e) {
@@ -133,19 +157,25 @@ public class CommandManager {
                         }
                         break;
                     case "group_counting_by_coordinates":
-                        collectionManager.groupCountingByCoordinates();
+                        Command groupCountingByCoordinates = new GroupCountingByCoordinates();
+                        groupCountingByCoordinates.execute(collectionManager);
+                        //collectionManager.groupCountingByCoordinates();
                         break;
                     case "filter_by_chapter":
                         try {
                             Chapter chapter = chapterReader.readChapter(scanner);
-                            collectionManager.filterByChapter(chapter);
-                        } catch (Exception e){
+                            Command filterByChapter = new FilterByChapter(chapter);
+                            filterByChapter.execute(collectionManager);
+                            //collectionManager.filterByChapter(chapter);
+                        } catch (Exception e) {
                             System.out.println(e.getMessage());
                         }
                         break;
                     case "filter_starts_with_name":
                         try {
-                            collectionManager.filterStartsWithName(input[1]);
+                            Command filterStartsWithName = new FilterStartsWithName(input[1]);
+                            filterStartsWithName.execute(collectionManager);
+                            //collectionManager.filterStartsWithName(input[1]);
                         } catch (ArrayIndexOutOfBoundsException e) {
                             System.out.println("To execute this command, you must enter the required argument.");
                         }

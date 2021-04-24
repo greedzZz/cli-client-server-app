@@ -1,5 +1,4 @@
-import utility.CollectionManager;
-import utility.CommandManager;
+import utility.*;
 import utility.parsing.FileManager;
 
 import java.io.File;

@@ -1,4 +1,14 @@
 package commands;
 
-public class FilterStartsWithName {
+import utility.CollectionManager;
+
+public class FilterStartsWithName extends Command {
+    public FilterStartsWithName(String strArg) {
+        this.strArg = strArg;
+    }
+
+    @Override
+    public void execute(CollectionManager cm) {
+        cm.filterStartsWithName(strArg);
+    }
 }
