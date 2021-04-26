@@ -5,7 +5,6 @@ import content.*;
 
 
 import java.io.*;
-import java.net.DatagramPacket;
 import java.util.*;
 
 public class ScriptReader {
@@ -27,8 +26,6 @@ public class ScriptReader {
             String command = "";
             boolean isIncorrect = false;
             while (!isIncorrect && scanFile.hasNextLine() && !command.equals("exit")) {
-                byte[] bytes;
-                DatagramPacket packet;
                 String[] input = scanFile.nextLine().trim().split(" ");
                 command = input[0];
                 try {

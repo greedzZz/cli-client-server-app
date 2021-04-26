@@ -6,52 +6,56 @@ import utility.auxiliary.Serializer;
 import utility.parsing.FileManager;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 
 public class Server {
+    private final SocketAddress address;
+    private DatagramChannel channel;
+
+    public Server() {
+        int port = 5555;
+        this.address = new InetSocketAddress(port);
+    }
+
     public static void main(String[] args) {
+        Server server = new Server();
+        server.run(args);
+    }
+
+    public Command readRequest(ByteBuffer buffer, byte[] bytes) throws IOException, ClassNotFoundException {
+        buffer.clear();
+        channel.receive(buffer);
+        return (Command) new Serializer().deserialize(bytes);
+    }
+
+    public void executeCommand(Command command, CollectionManager cm) {
+        command.execute(cm);
+    }
+
+    public void sendAnswer() {
+    }
+
+    public void run(String[] args) {
         try {
+            if (args.length == 0 || args[0].matches("(/dev/)\\w*")) {
+                throw new IllegalArgumentException();
+            }
             CollectionManager collectionManager = new CollectionManager();
             FileManager fileManager = new FileManager(new File(args[0]));
             fileManager.manageXML(collectionManager);
 
-            Serializer serializer = new Serializer();
-            byte[] bytes = new byte[1000000];
-            SocketAddress address = new InetSocketAddress(5555);
-            DatagramChannel channel = DatagramChannel.open();
+            channel = DatagramChannel.open();
             channel.bind(address);
+            byte[] bytes = new byte[1000000];
             ByteBuffer buffer = ByteBuffer.wrap(bytes);
-            Command command;
-            while (true) {
-                buffer.clear();
-                channel.receive(buffer);
-                command = (Command) serializer.deserialize(bytes);
-                command.execute(collectionManager);
+            while(true){
+                executeCommand(readRequest(buffer, bytes), collectionManager);
             }
         } catch (Exception e) {
             System.out.println("There is no file pathname in the command argument or entered pathname is incorrect.");
         }
-//        Serializer serializer = new Serializer();
-//        byte bytes[] = new byte[1000000];
-//        SocketAddress address = new InetSocketAddress(5555);
-//        DatagramChannel channel = DatagramChannel.open();
-//        channel.bind(address);
-//        ByteBuffer buffer = ByteBuffer.wrap(bytes);
-//        buffer.clear();
-//        channel.receive(buffer);
-//        Command command = (Command) serializer.deserialize(bytes);
-//        CollectionManager collectionManager = new CollectionManager();
-//        FileManager fileManager = new FileManager(new File(args[0]));
-//        fileManager.manageXML(collectionManager);
-//        command.execute(collectionManager);
-
-
-//        for (int i = 0; i < 3; i++) {
-//            b[i] *= 2;
-//        }
-//        f.flip();
-//        s.send(f, a);
     }
 }

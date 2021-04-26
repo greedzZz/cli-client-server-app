@@ -5,29 +5,24 @@ import utility.CommandManager;
 import java.net.*;
 
 public class Client {
-//    SocketAddress address;
-//    DatagramSocket socket;
-//    CommandManager commandManager;
-//    private final String hostname = "localhost";
-//    private final int port = 5555;
-//    public Client() throws SocketException {
-//        this.socket = new DatagramSocket();
-//    }
+    private SocketAddress address;
+    private DatagramSocket socket;
 
-    public static void main(String[] args) throws Exception {
-
-        SocketAddress a = new InetSocketAddress("localhost", 5555);
-        DatagramSocket s = new DatagramSocket();
-        CommandManager commandManager = new CommandManager();
-        commandManager.readInput(a, s);
-
+    public static void main(String[] args) throws SocketException {
+        Client client = new Client();
+        client.connect();
+        client.run();
     }
 
-//    public void connect() {
-//        address = new InetSocketAddress(hostname, port);
-//    }
-//
-//    public void run() {
-//        commandManager = new CommandManager(address, socket);
-//    }
+    public void connect() throws SocketException {
+        String hostname = "localhost";
+        int port = 5555;
+        address = new InetSocketAddress(hostname, port);
+        socket = new DatagramSocket();
+    }
+
+    public void run() {
+        CommandManager commandManager = new CommandManager();
+        commandManager.readInput(address, socket);
+    }
 }
