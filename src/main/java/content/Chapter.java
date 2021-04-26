@@ -1,9 +1,11 @@
 package content;
 
+import java.io.Serializable;
+
 /**
  * Class Chapter.
  */
-public class Chapter {
+public class Chapter implements Serializable {
     private String name; //Поле не может быть null, Строка не может быть пустой
     private String world; //Поле не может быть null
 

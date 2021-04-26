@@ -5,6 +5,7 @@ import content.*;
 import utility.auxiliary.*;
 
 import java.io.File;
+import java.net.*;
 import java.util.Scanner;
 
 /**
@@ -12,19 +13,20 @@ import java.util.Scanner;
  * Reads user input.
  */
 public class CommandManager {
-    private final CollectionManager collectionManager;
     private final ElementReader elementReader;
     private final ChapterReader chapterReader;
     private final ScriptReader scriptReader;
+    private final Serializer serializer;
 
-    public CommandManager(CollectionManager collectionManager) {
-        this.collectionManager = collectionManager;
+    public CommandManager() {
         this.elementReader = new ElementReader();
         this.chapterReader = new ChapterReader();
-        this.scriptReader = new ScriptReader(collectionManager, elementReader, chapterReader);
+        this.serializer = new Serializer();
+        this.scriptReader = new ScriptReader(elementReader, chapterReader, serializer);
     }
 
-    public void readInput() {
+    public void readInput(SocketAddress address, DatagramSocket socket) {
+        CommandSender commandSender = new CommandSender(address, socket);
         Scanner scanner = new Scanner(System.in);
         System.out.println("Please, enter a command. (Enter \"help\" to get information about available commands)");
         String command = "";
@@ -35,18 +37,18 @@ public class CommandManager {
                 switch (command) {
                     case "help":
                         Command help = new Help();
-                        help.execute(collectionManager);
-                        //collectionManager.help();
+                        commandSender.send(serializer.serialize(help));
+                        //bytes = serializer.serialize(help);
+                        //packet = new DatagramPacket(bytes, bytes.length, address);
+                        //socket.send(packet);
                         break;
                     case "info":
                         Command info = new Info();
-                        info.execute(collectionManager);
-                        //collectionManager.info();
+                        commandSender.send(serializer.serialize(info));
                         break;
                     case "show":
                         Command show = new Show();
-                        show.execute(collectionManager);
-                        //collectionManager.show();
+                        commandSender.send(serializer.serialize(show));
                         break;
                     case "insert":
                         try {
@@ -56,8 +58,7 @@ public class CommandManager {
                             }
                             SpaceMarine sm = elementReader.readElement(scanner);
                             Command insert = new Insert(key, sm);
-                            insert.execute(collectionManager);
-                            //collectionManager.insert(key, sm);
+                            commandSender.send(serializer.serialize(insert));
                         } catch (ArrayIndexOutOfBoundsException e) {
                             System.out.println("To execute this command, you must enter the required argument.");
                         } catch (NumberFormatException e) {
@@ -72,8 +73,7 @@ public class CommandManager {
                             }
                             SpaceMarine sm = elementReader.readElement(scanner);
                             Command update = new Update(id, sm);
-                            update.execute(collectionManager);
-                            //collectionManager.update(id, sm);
+                            commandSender.send(serializer.serialize(update));
                         } catch (ArrayIndexOutOfBoundsException e) {
                             System.out.println("To execute this command, you must enter the required argument.");
                         } catch (NumberFormatException e) {
@@ -84,8 +84,7 @@ public class CommandManager {
                         try {
                             Integer key = Integer.parseInt(input[1]);
                             Command removeKey = new RemoveKey(key);
-                            removeKey.execute(collectionManager);
-                            //collectionManager.removeKey(key);
+                            commandSender.send(serializer.serialize(removeKey));
                         } catch (ArrayIndexOutOfBoundsException e) {
                             System.out.println("To execute this command, you must enter the required argument.");
                         } catch (NumberFormatException e) {
@@ -94,22 +93,18 @@ public class CommandManager {
                         break;
                     case "clear":
                         Command clear = new Clear();
-                        clear.execute(collectionManager);
-                        //collectionManager.clear();
+                        commandSender.send(serializer.serialize(clear));
                         break;
-                    case "save":
-                        Command save = new Save();
-                        save.execute(collectionManager);
-                        //collectionManager.save();
-                        break;
+//                    case "save":
+//                        Command save = new Save();
+//                        break;
                     case "execute_script":
                         try {
                             File file = new File(input[1]);
                             scriptReader.addScript(file.getAbsolutePath());
                             Command executeScript = new ExecuteScript();
-                            executeScript.execute(collectionManager);
-                            //collectionManager.executeScript();
-                            scriptReader.readScript(input[1]);
+                            commandSender.send(serializer.serialize(executeScript));
+                            scriptReader.readScript(input[1], commandSender);
                             scriptReader.clearScripts();
                         } catch (ArrayIndexOutOfBoundsException e) {
                             System.out.println("To execute this command, you must enter the required argument.");
@@ -118,15 +113,14 @@ public class CommandManager {
                     case "exit":
                         scanner.close();
                         Command exit = new Exit();
-                        exit.execute(collectionManager);
-                        //collectionManager.exit();
+                        commandSender.send(serializer.serialize(exit));
+                        System.exit(0);
                         break;
                     case "remove_greater":
                         try {
                             SpaceMarine sm = elementReader.readElement(scanner);
                             Command removeGreater = new RemoveGreater(sm);
-                            removeGreater.execute(collectionManager);
-                            //collectionManager.removeGreater(sm);
+                            commandSender.send(serializer.serialize(removeGreater));
                         } catch (Exception e) {
                             System.out.println(e.getMessage());
                         }
@@ -136,8 +130,7 @@ public class CommandManager {
                             Integer key = Integer.parseInt(input[1]);
                             SpaceMarine sm = elementReader.readElement(scanner);
                             Command replaceIfGreater = new ReplaceIfGreater(key, sm);
-                            replaceIfGreater.execute(collectionManager);
-                            //collectionManager.replaceIfGreater(key, sm);
+                            commandSender.send(serializer.serialize(replaceIfGreater));
                         } catch (ArrayIndexOutOfBoundsException e) {
                             System.out.println("To execute this command, you must enter the required argument.");
                         } catch (NumberFormatException e) {
@@ -148,8 +141,7 @@ public class CommandManager {
                         try {
                             Integer key = Integer.parseInt(input[1]);
                             Command removeGreaterKey = new RemoveGreaterKey(key);
-                            removeGreaterKey.execute(collectionManager);
-                            //collectionManager.removeGreaterKey(key);
+                            commandSender.send(serializer.serialize(removeGreaterKey));
                         } catch (ArrayIndexOutOfBoundsException e) {
                             System.out.println("To execute this command, you must enter the required argument.");
                         } catch (NumberFormatException e) {
@@ -158,15 +150,13 @@ public class CommandManager {
                         break;
                     case "group_counting_by_coordinates":
                         Command groupCountingByCoordinates = new GroupCountingByCoordinates();
-                        groupCountingByCoordinates.execute(collectionManager);
-                        //collectionManager.groupCountingByCoordinates();
+                        commandSender.send(serializer.serialize(groupCountingByCoordinates));
                         break;
                     case "filter_by_chapter":
                         try {
                             Chapter chapter = chapterReader.readChapter(scanner);
                             Command filterByChapter = new FilterByChapter(chapter);
-                            filterByChapter.execute(collectionManager);
-                            //collectionManager.filterByChapter(chapter);
+                            commandSender.send(serializer.serialize(filterByChapter));
                         } catch (Exception e) {
                             System.out.println(e.getMessage());
                         }
@@ -174,8 +164,7 @@ public class CommandManager {
                     case "filter_starts_with_name":
                         try {
                             Command filterStartsWithName = new FilterStartsWithName(input[1]);
-                            filterStartsWithName.execute(collectionManager);
-                            //collectionManager.filterStartsWithName(input[1]);
+                            commandSender.send(serializer.serialize(filterStartsWithName));
                         } catch (ArrayIndexOutOfBoundsException e) {
                             System.out.println("To execute this command, you must enter the required argument.");
                         }
@@ -189,6 +178,6 @@ public class CommandManager {
 
         }
         scanner.close();
-        collectionManager.exit();
+        //collectionManager.exit();
     }
 }

@@ -3,7 +3,9 @@ package commands;
 import content.*;
 import utility.CollectionManager;
 
-public abstract class Command {
+import java.io.Serializable;
+
+public abstract class Command implements Serializable {
     protected String strArg;
     protected Integer intArg;
     protected SpaceMarine smArg;
