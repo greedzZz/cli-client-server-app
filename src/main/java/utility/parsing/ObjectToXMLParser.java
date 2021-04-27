@@ -2,10 +2,7 @@ package utility.parsing;
 
 import content.SpaceMarine;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.TreeMap;
 
 /**
@@ -19,7 +16,7 @@ public class ObjectToXMLParser {
         this.file = file;
     }
 
-    public void parse(TreeMap<Integer, SpaceMarine> treeMap) {
+    public String parse(TreeMap<Integer, SpaceMarine> treeMap) {
         try (FileOutputStream fos = new FileOutputStream(file, false);
              BufferedOutputStream bos = new BufferedOutputStream(fos)) {
             bos.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n".getBytes(), 0, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n".getBytes().length);
@@ -86,9 +83,9 @@ public class ObjectToXMLParser {
                 bos.write("\t</SpaceMarine>\n".getBytes(), 0, "\t</SpaceMarine>\n".getBytes().length);
             }
             bos.write("</Marines>\n".getBytes(), 0, "</Marines>\n".getBytes().length);
-            System.out.println("Collection data has been successfully saved to file.");
+            return "Collection data has been successfully saved to file.";
         } catch (IOException e) {
-            System.out.println("No permission to write to the file");
+            return "No permission to write to the file";
         }
     }
 }

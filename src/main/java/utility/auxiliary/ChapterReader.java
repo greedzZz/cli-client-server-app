@@ -10,7 +10,7 @@ import java.util.Scanner;
 public class ChapterReader {
     private boolean fromFile = false;
 
-    public Chapter readChapter(Scanner sc) throws Exception {
+    public Chapter readChapter(Scanner sc) throws IllegalArgumentException {
         String[] fields = new String[2];
         if (!fromFile) {
             boolean isCorrect = false;

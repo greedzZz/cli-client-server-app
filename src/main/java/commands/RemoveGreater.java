@@ -9,7 +9,7 @@ public class RemoveGreater extends Command {
     }
 
     @Override
-    public void execute(CollectionManager cm) {
-        cm.removeGreater(smArg);
+    public String execute(CollectionManager cm) {
+        return cm.removeGreater(smArg);
     }
 }

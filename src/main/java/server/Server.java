@@ -12,12 +12,14 @@ import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 
 public class Server {
-    private final SocketAddress address;
+    private SocketAddress address;
     private DatagramChannel channel;
+    private final Serializer serializer;
 
     public Server() {
         int port = 5555;
         this.address = new InetSocketAddress(port);
+        this.serializer = new Serializer();
     }
 
     public static void main(String[] args) {
@@ -27,15 +29,17 @@ public class Server {
 
     public Command readRequest(ByteBuffer buffer, byte[] bytes) throws IOException, ClassNotFoundException {
         buffer.clear();
-        channel.receive(buffer);
-        return (Command) new Serializer().deserialize(bytes);
+        address = channel.receive(buffer);
+        return (Command) serializer.deserialize(bytes);
     }
 
-    public void executeCommand(Command command, CollectionManager cm) {
-        command.execute(cm);
+    public String executeCommand(Command command, CollectionManager cm) {
+        return command.execute(cm);
     }
 
-    public void sendAnswer() {
+    public void sendAnswer(String str) throws IOException {
+        ByteBuffer byteBuffer = ByteBuffer.wrap(serializer.serialize(str));
+        channel.send(byteBuffer, address);
     }
 
     public void run(String[] args) {
@@ -51,11 +55,13 @@ public class Server {
             channel.bind(address);
             byte[] bytes = new byte[1000000];
             ByteBuffer buffer = ByteBuffer.wrap(bytes);
-            while(true){
-                executeCommand(readRequest(buffer, bytes), collectionManager);
+            while (true) {
+                sendAnswer(executeCommand(readRequest(buffer, bytes), collectionManager));
             }
-        } catch (Exception e) {
+        } catch (IllegalArgumentException e) {
             System.out.println("There is no file pathname in the command argument or entered pathname is incorrect.");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

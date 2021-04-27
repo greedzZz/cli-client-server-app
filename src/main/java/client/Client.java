@@ -1,17 +1,30 @@
 package client;
 
 import utility.CommandManager;
+import utility.auxiliary.ClientAsker;
 
+import java.io.IOException;
 import java.net.*;
 
 public class Client {
     private SocketAddress address;
     private DatagramSocket socket;
 
-    public static void main(String[] args) throws SocketException {
+    public static void main(String[] args) {
         Client client = new Client();
-        client.connect();
-        client.run();
+        boolean tryingToConnect = true;
+        while (tryingToConnect) {
+            try {
+                client.connect();
+                client.run();
+            } catch (IOException e) {
+                System.out.println("Unfortunately, the server is currently unavailable.");
+                if (new ClientAsker().ask() <= 0) {
+                    tryingToConnect = false;
+                }
+            }
+        }
+        System.out.println("The program is finished.");
     }
 
     public void connect() throws SocketException {
@@ -21,7 +34,7 @@ public class Client {
         socket = new DatagramSocket();
     }
 
-    public void run() {
+    public void run() throws IOException {
         CommandManager commandManager = new CommandManager();
         commandManager.readInput(address, socket);
     }

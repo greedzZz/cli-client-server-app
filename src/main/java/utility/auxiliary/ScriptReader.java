@@ -3,7 +3,6 @@ package utility.auxiliary;
 import commands.*;
 import content.*;
 
-
 import java.io.*;
 import java.util.*;
 
@@ -19,13 +18,13 @@ public class ScriptReader {
         this.serializer = serializer;
     }
 
-    public void readScript(String pathname, CommandSender commandSender) {
+    public void readScript(String pathname, CommandSender commandSender, AnswerReceiver answerReceiver) {
         try {
             File file = new File(pathname);
             Scanner scanFile = new Scanner(file);
             String command = "";
             boolean isIncorrect = false;
-            while (!isIncorrect && scanFile.hasNextLine() && !command.equals("exit")) {
+            while (!isIncorrect && scanFile.hasNextLine()) {
                 String[] input = scanFile.nextLine().trim().split(" ");
                 command = input[0];
                 try {
@@ -33,14 +32,17 @@ public class ScriptReader {
                         case "help":
                             Command help = new Help();
                             commandSender.send(serializer.serialize(help));
+                            System.out.println(answerReceiver.receive());
                             break;
                         case "info":
                             Command info = new Info();
                             commandSender.send(serializer.serialize(info));
+                            System.out.println(answerReceiver.receive());
                             break;
                         case "show":
                             Command show = new Show();
                             commandSender.send(serializer.serialize(show));
+                            System.out.println(answerReceiver.receive());
                             break;
                         case "insert":
                             try {
@@ -52,6 +54,7 @@ public class ScriptReader {
                                 SpaceMarine sm = elementReader.readElement(scanFile);
                                 Command insert = new Insert(key, sm);
                                 commandSender.send(serializer.serialize(insert));
+                                System.out.println(answerReceiver.receive());
                             } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
                                 System.out.println("The script file is not correct. Further reading of the script is impossible.\n" +
                                         "Enter \"help\" to get information about available commands.");
@@ -69,6 +72,7 @@ public class ScriptReader {
                                 SpaceMarine sm = elementReader.readElement(scanFile);
                                 Command update = new Update(id, sm);
                                 commandSender.send(serializer.serialize(update));
+                                System.out.println(answerReceiver.receive());
                             } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
                                 System.out.println("The script file is not correct. Further reading of the script is impossible.\n" +
                                         "Enter \"help\" to get information about available commands.");
@@ -81,6 +85,7 @@ public class ScriptReader {
                                 Integer key = Integer.parseInt(input[1]);
                                 Command removeKey = new RemoveKey(key);
                                 commandSender.send(serializer.serialize(removeKey));
+                                System.out.println(answerReceiver.receive());
                             } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
                                 System.out.println("The script file is not correct. Further reading of the script is impossible.\n" +
                                         "Enter \"help\" to get information about available commands.");
@@ -90,20 +95,19 @@ public class ScriptReader {
                         case "clear":
                             Command clear = new Clear();
                             commandSender.send(serializer.serialize(clear));
+                            System.out.println(answerReceiver.receive());
                             break;
-//                        case "save":
-//                            Command save = new Save();
-//                            break;
                         case "execute_script":
                             try {
                                 File nextFile = new File(input[1]);
                                 if (otherScripts.contains(nextFile.getAbsolutePath())) {
-                                    throw new Exception("Recursion detected. Further reading of the script is impossible.");
+                                    throw new IllegalArgumentException("Recursion detected. Further reading of the script is impossible.");
                                 } else {
                                     otherScripts.add(nextFile.getAbsolutePath());
                                     Command executeScript = new ExecuteScript();
                                     commandSender.send(serializer.serialize(executeScript));
-                                    readScript(input[1], commandSender);
+                                    System.out.println(answerReceiver.receive());
+                                    readScript(input[1], commandSender, answerReceiver);
                                 }
                             } catch (ArrayIndexOutOfBoundsException e) {
                                 System.out.println("The script file is not correct. Further reading of the script is impossible.\n" +
@@ -115,6 +119,7 @@ public class ScriptReader {
                             scanFile.close();
                             Command exit = new Exit();
                             commandSender.send(serializer.serialize(exit));
+                            System.out.println(answerReceiver.receive());
                             System.exit(0);
                             break;
                         case "remove_greater":
@@ -123,6 +128,7 @@ public class ScriptReader {
                                 SpaceMarine sm = elementReader.readElement(scanFile);
                                 Command removeGreater = new RemoveGreater(sm);
                                 commandSender.send(serializer.serialize(removeGreater));
+                                System.out.println(answerReceiver.receive());
                             } catch (IllegalArgumentException e) {
                                 elementReader.setFromFile(false);
                                 System.out.println("The script file is not correct. Further reading of the script is impossible.\n" +
@@ -138,6 +144,7 @@ public class ScriptReader {
                                 SpaceMarine sm = elementReader.readElement(scanFile);
                                 Command replaceIfGreater = new ReplaceIfGreater(key, sm);
                                 commandSender.send(serializer.serialize(replaceIfGreater));
+                                System.out.println(answerReceiver.receive());
                             } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
                                 System.out.println("The script file is not correct. Further reading of the script is impossible.\n" +
                                         "Enter \"help\" to get information about available commands.");
@@ -150,6 +157,7 @@ public class ScriptReader {
                                 Integer key = Integer.parseInt(input[1]);
                                 Command removeGreaterKey = new RemoveGreaterKey(key);
                                 commandSender.send(serializer.serialize(removeGreaterKey));
+                                System.out.println(answerReceiver.receive());
                             } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
                                 System.out.println("The script file is not correct. Further reading of the script is impossible.\n" +
                                         "Enter \"help\" to get information about available commands.");
@@ -159,6 +167,7 @@ public class ScriptReader {
                         case "group_counting_by_coordinates":
                             Command groupCountingByCoordinates = new GroupCountingByCoordinates();
                             commandSender.send(serializer.serialize(groupCountingByCoordinates));
+                            System.out.println(answerReceiver.receive());
                             break;
                         case "filter_by_chapter":
                             try {
@@ -166,6 +175,7 @@ public class ScriptReader {
                                 Chapter chapter = chapterReader.readChapter(scanFile);
                                 Command filterByChapter = new FilterByChapter(chapter);
                                 commandSender.send(serializer.serialize(filterByChapter));
+                                System.out.println(answerReceiver.receive());
                             } catch (IllegalArgumentException e) {
                                 elementReader.setFromFile(false);
                                 System.out.println("The script file is not correct. Further reading of the script is impossible.\n" +
@@ -177,6 +187,7 @@ public class ScriptReader {
                             try {
                                 Command filterStartsWithName = new FilterStartsWithName(input[1]);
                                 commandSender.send(serializer.serialize(filterStartsWithName));
+                                System.out.println(answerReceiver.receive());
                             } catch (ArrayIndexOutOfBoundsException e) {
                                 System.out.println("The script file is not correct. Further reading of the script is impossible.\n" +
                                         "Enter \"help\" to get information about available commands.");
@@ -184,9 +195,9 @@ public class ScriptReader {
                             }
                             break;
                         default:
-                            throw new Exception("The script file is not correct or there are no commands there. Further reading of the script is impossible.");
+                            throw new IllegalArgumentException("The script file is not correct or there are no commands there. Further reading of the script is impossible.");
                     }
-                } catch (Exception e) {
+                } catch (IllegalArgumentException e) {
                     System.out.println(e.getMessage());
                     isIncorrect = true;
                 }

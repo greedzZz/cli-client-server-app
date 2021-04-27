@@ -10,7 +10,7 @@ import java.util.Scanner;
 public class ElementReader {
     private boolean fromFile = false;
 
-    public SpaceMarine readElement(Scanner sc) throws Exception {
+    public SpaceMarine readElement(Scanner sc) throws IllegalArgumentException {
         if (!fromFile) {
             String argument = "";
             boolean isCorrect = false;
@@ -45,12 +45,12 @@ public class ElementReader {
                 try {
                     Integer y = Integer.parseInt(argument);
                     if (y > 941) {
-                        throw new Exception("Coordinate Y max value: 941.");
+                        throw new IllegalArgumentException("Coordinate Y max value: 941.");
                     }
                     isCorrect = true;
                 } catch (NumberFormatException e) {
                     System.out.println("Coordinate Y value must be integer.");
-                } catch (Exception e) {
+                } catch (IllegalArgumentException e) {
                     System.out.println(e.getMessage());
                 }
             }
@@ -66,12 +66,12 @@ public class ElementReader {
                     try {
                         Integer health = Integer.parseInt(argument);
                         if (health < 0) {
-                            throw new Exception("Health value must be greater than 0.");
+                            throw new IllegalArgumentException("Health value must be greater than 0.");
                         }
                         isCorrect = true;
                     } catch (NumberFormatException e) {
                         System.out.println("Health value must be integer or empty word.");
-                    } catch (Exception e) {
+                    } catch (IllegalArgumentException e) {
                         System.out.println(e.getMessage());
                     }
                 }
@@ -195,7 +195,7 @@ public class ElementReader {
             try {
                 Integer y = Integer.parseInt(argument);
                 if (y > 941) {
-                    throw new Exception("Coordinate Y max value: 941.");
+                    throw new IllegalArgumentException("Coordinate Y max value: 941.");
                 }
             } catch (NumberFormatException e) {
                 throw new IllegalArgumentException("Coordinate Y value must be integer.");
@@ -207,7 +207,7 @@ public class ElementReader {
                 try {
                     Integer health = Integer.parseInt(argument);
                     if (health < 0) {
-                        throw new Exception("Health value must be greater than 0.");
+                        throw new IllegalArgumentException("Health value must be greater than 0.");
                     }
                 } catch (NumberFormatException e) {
                     throw new IllegalArgumentException("Health value must be integer or empty word.");

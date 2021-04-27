@@ -10,7 +10,7 @@ public class ReplaceIfGreater extends Command {
     }
 
     @Override
-    public void execute(CollectionManager cm) {
-        cm.replaceIfGreater(intArg, smArg);
+    public String execute(CollectionManager cm) {
+        return cm.replaceIfGreater(intArg, smArg);
     }
 }

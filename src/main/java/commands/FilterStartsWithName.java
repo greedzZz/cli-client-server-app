@@ -8,7 +8,7 @@ public class FilterStartsWithName extends Command {
     }
 
     @Override
-    public void execute(CollectionManager cm) {
-        cm.filterStartsWithName(strArg);
+    public String execute(CollectionManager cm) {
+        return cm.filterStartsWithName(strArg);
     }
 }

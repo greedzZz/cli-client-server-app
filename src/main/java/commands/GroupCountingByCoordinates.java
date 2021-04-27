@@ -4,7 +4,7 @@ import utility.CollectionManager;
 
 public class GroupCountingByCoordinates extends Command {
     @Override
-    public void execute(CollectionManager cm) {
-        cm.groupCountingByCoordinates();
+    public String execute(CollectionManager cm) {
+        return cm.groupCountingByCoordinates();
     }
 }

@@ -9,12 +9,12 @@ public class Coordinates implements Serializable {
     private int x;
     private Integer y; //Максимальное значение поля: 941, Поле не может быть null
 
-    public Coordinates(Integer x, Integer y) throws Exception {
+    public Coordinates(Integer x, Integer y) throws IllegalArgumentException {
         if (y == null || y > 941) {
-            throw new Exception("Coordinate Y cannot be empty.\n" +
+            throw new IllegalArgumentException("Coordinate Y cannot be empty.\n" +
                     "Max value: 941.");
         } else if (x == null) {
-            throw new Exception("Coordinate X cannot be empty.");
+            throw new IllegalArgumentException("Coordinate X cannot be empty.");
         } else {
             this.x = x;
             this.y = y;

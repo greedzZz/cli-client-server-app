@@ -4,7 +4,7 @@ import utility.CollectionManager;
 
 public class Save extends Command {
     @Override
-    public void execute(CollectionManager cm) {
-        cm.save();
+    public String execute(CollectionManager cm) {
+        return cm.save();
     }
 }

@@ -8,7 +8,7 @@ public class RemoveKey extends Command {
     }
 
     @Override
-    public void execute(CollectionManager cm) {
-        cm.removeKey(intArg);
+    public String execute(CollectionManager cm) {
+        return cm.removeKey(intArg);
     }
 }

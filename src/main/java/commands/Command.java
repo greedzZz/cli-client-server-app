@@ -11,5 +11,5 @@ public abstract class Command implements Serializable {
     protected SpaceMarine smArg;
     protected Chapter chapArg;
 
-    public abstract void execute(CollectionManager cm);
+    public abstract String execute(CollectionManager cm);
 }

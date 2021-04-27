@@ -9,7 +9,7 @@ public class FilterByChapter extends Command {
     }
 
     @Override
-    public void execute(CollectionManager cm) {
-        cm.filterByChapter(chapArg);
+    public String execute(CollectionManager cm) {
+        return cm.filterByChapter(chapArg);
     }
 }

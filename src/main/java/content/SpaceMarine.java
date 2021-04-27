@@ -24,11 +24,11 @@ public class SpaceMarine implements Comparable<SpaceMarine>, Serializable {
                        AstartesCategory category,
                        Weapon weaponType,
                        MeleeWeapon meleeWeapon,
-                       Chapter chapter) throws Exception {
+                       Chapter chapter) throws IllegalArgumentException {
         if (name == null) {
-            throw new Exception("Name cannot be empty word.");
+            throw new IllegalArgumentException("Name cannot be empty word.");
         } else if (health != null && health <= 0) {
-            throw new Exception("Health value must be greater than 0.");
+            throw new IllegalArgumentException("Health value must be greater than 0.");
         }
         try {
             this.name = name;
@@ -52,22 +52,22 @@ public class SpaceMarine implements Comparable<SpaceMarine>, Serializable {
                        AstartesCategory category,
                        Weapon weaponType,
                        MeleeWeapon meleeWeapon,
-                       Chapter chapter) throws Exception {
+                       Chapter chapter) throws IllegalArgumentException {
         if (name == null) {
-            throw new Exception("Name cannot be empty word.");
+            throw new IllegalArgumentException("Name cannot be empty word.");
         } else if (health != null && health <= 0) {
-            throw new Exception("Health value must be greater than 0.");
+            throw new IllegalArgumentException("Health value must be greater than 0.");
         } else if (id == null) {
-            throw new Exception("ID cannot be empty word.");
+            throw new IllegalArgumentException("ID cannot be empty word.");
         } else if (id <= 0) {
-            throw new Exception("ID value must be greater than 0");
+            throw new IllegalArgumentException("ID value must be greater than 0");
         } else if (creationDate == null) {
-            throw new Exception("Creation date cannot be empty word.");
+            throw new IllegalArgumentException("Creation date cannot be empty word.");
         }
         try {
             LocalDateTime.parse(creationDate);
         } catch (Exception e) {
-            throw new Exception("Creation date must be written according to ISO-8601 calendar system, such as 2007-12-03T10:15:30.");
+            throw new IllegalArgumentException("Creation date must be written according to ISO-8601 calendar system, such as 2007-12-03T10:15:30.");
         }
         try {
             this.id = id;

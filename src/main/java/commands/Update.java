@@ -10,7 +10,7 @@ public class Update extends Command {
     }
 
     @Override
-    public void execute(CollectionManager cm) {
-        cm.update(intArg, smArg);
+    public String execute(CollectionManager cm) {
+        return cm.update(intArg, smArg);
     }
 }

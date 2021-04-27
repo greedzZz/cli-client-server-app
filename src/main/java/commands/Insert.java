@@ -10,7 +10,7 @@ public class Insert extends Command {
     }
 
     @Override
-    public void execute(CollectionManager cm) {
-        cm.insert(intArg, smArg);
+    public String execute(CollectionManager cm) {
+        return cm.insert(intArg, smArg);
     }
 }
