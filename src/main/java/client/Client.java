@@ -9,6 +9,13 @@ import java.net.*;
 public class Client {
     private SocketAddress address;
     private DatagramSocket socket;
+    private final ClientAsker clientAsker;
+    private final int PORT = 5885;
+    private final String HOST = "localhost";
+
+    public Client() {
+        this.clientAsker = new ClientAsker();
+    }
 
     public static void main(String[] args) {
         Client client = new Client();
@@ -19,18 +26,17 @@ public class Client {
                 client.run();
             } catch (IOException e) {
                 System.out.println("Unfortunately, the server is currently unavailable.");
-                if (new ClientAsker().ask() <= 0) {
+                if (client.clientAsker.ask() <= 0) {
                     tryingToConnect = false;
                 }
             }
         }
+        client.socket.close();
         System.out.println("The program is finished.");
     }
 
     public void connect() throws SocketException {
-        String hostname = "localhost";
-        int port = 5555;
-        address = new InetSocketAddress(hostname, port);
+        address = new InetSocketAddress(HOST, PORT);
         socket = new DatagramSocket();
     }
 

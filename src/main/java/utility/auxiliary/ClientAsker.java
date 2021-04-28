@@ -7,7 +7,7 @@ public class ClientAsker {
     public int ask() {
         Scanner scanner = new Scanner(System.in);
         String answer;
-        System.out.println("Try to connect again? (\"Yes\"/\"No\")");
+        System.out.println("Try to send a command again? (\"Yes\"/\"No\")");
         while (scanner.hasNextLine()) {
             answer = scanner.nextLine();
             if (answer.equals("Yes") || answer.equals("yes")) {
