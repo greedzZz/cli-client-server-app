@@ -1,5 +1,3 @@
-package client;
-
 import utility.CommandManager;
 import utility.auxiliary.ClientAsker;
 

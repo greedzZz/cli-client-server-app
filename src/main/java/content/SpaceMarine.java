@@ -38,7 +38,7 @@ public class SpaceMarine implements Comparable<SpaceMarine>, Serializable {
             this.weaponType = weaponType;
             this.meleeWeapon = meleeWeapon;
             this.chapter = chapter;
-            this.creationDate = LocalDateTime.now();
+            //this.creationDate = LocalDateTime.now();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -114,6 +114,10 @@ public class SpaceMarine implements Comparable<SpaceMarine>, Serializable {
 
     public String getCreationDate() {
         return creationDate.toString();
+    }
+
+    public void setCreationDate() {
+        this.creationDate = LocalDateTime.now();
     }
 
     public Integer getHealth() {

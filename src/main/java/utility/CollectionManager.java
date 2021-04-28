@@ -6,12 +6,12 @@ import utility.parsing.ObjectToXMLParser;
 
 import java.io.File;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Class that stores and interacts with the collection.
  */
 public class CollectionManager {
-    //private final IDGenerator idGenerator;
     private final TreeMap<Integer, SpaceMarine> treeMap;
     private final Date date;
     private final HashMap<String, String> commandPool = new HashMap<>();
@@ -38,15 +38,12 @@ public class CollectionManager {
     public CollectionManager() {
         this.date = new Date();
         this.treeMap = new TreeMap<>();
-        //this.idGenerator = new IDGenerator();
     }
 
     public String help() {
-        StringBuilder sb = new StringBuilder();
-        for (String com : commandPool.keySet()) {
-            sb.append(com).append(": ").append(commandPool.get(com)).append("\n");
-        }
-        return sb.toString();
+        return commandPool.keySet().stream()
+                .map(com -> com + ": " + commandPool.get(com) + "\n")
+                .collect(Collectors.joining());
     }
 
     public String info() {
@@ -61,12 +58,10 @@ public class CollectionManager {
             if (treeMap.isEmpty()) {
                 throw new Exception("The collection is empty.");
             }
-            StringBuilder sb = new StringBuilder();
-            sb.append("Elements of the collection:\n");
-            for (SpaceMarine spaceMarine : treeMap.values()) {
-                sb.append(smd.describe(spaceMarine)).append("\n\n");
-            }
-            return sb.toString();
+            return treeMap.values().stream()
+                    .map(smd::describe)
+                    .map(str -> str + "\n\n")
+                    .collect(Collectors.joining());
         } catch (Exception e) {
             return e.getMessage();
         }
@@ -75,6 +70,7 @@ public class CollectionManager {
     public String insert(Integer key, SpaceMarine sm) {
         try {
             sm.setID(key);
+            sm.setCreationDate();
             return put(sm);
         } catch (Exception e) {
             return e.getMessage() + "\n";
@@ -87,13 +83,13 @@ public class CollectionManager {
                 throw new Exception("There is no element with such id in the collection.");
             } else {
                 sm.setID(id);
+                sm.setCreationDate();
                 return put(sm) +
                         "Value of element with id " + id + " has been updated.\n";
             }
         } catch (Exception e) {
             return e.getMessage() + "\n";
         }
-
     }
 
     public String removeKey(Integer key) {
@@ -102,7 +98,6 @@ public class CollectionManager {
                 throw new Exception("There is no such argument in the collection.");
             } else {
                 treeMap.remove(key);
-                //idGenerator.removeID(key);
                 return "Element with " + key + " key has been deleted.\n";
             }
         } catch (Exception e) {
@@ -112,13 +107,13 @@ public class CollectionManager {
 
     public String clear() {
         treeMap.clear();
-        //idGenerator.clearSet();
         return "The collection has been cleared.\n";
     }
 
-    public String save() {
+    public void save() {
         ObjectToXMLParser parser = new ObjectToXMLParser(file);
-        return parser.parse(treeMap);
+        parser.parse(treeMap);
+        System.exit(0);
     }
 
     public String executeScript() {
@@ -141,7 +136,6 @@ public class CollectionManager {
                     SpaceMarine next = iterator.next();
                     if (sm.compareTo(next) < 0) {
                         name = next.getName();
-                        //idGenerator.removeID(next.getID());
                         iterator.remove();
                         sb.append("Space marine ").append(name).append(" has been removed from the collection.\n");
                     }
@@ -160,6 +154,7 @@ public class CollectionManager {
             } else {
                 if (sm.compareTo(treeMap.get(key)) > 0) {
                     sm.setID(key);
+                    sm.setCreationDate();
                     treeMap.put(sm.getID(), sm);
                     return "Element with " + key + " key has been replaced.\n";
                 } else {
@@ -183,7 +178,6 @@ public class CollectionManager {
                     Integer currentKey = next.getID();
                     if (currentKey > key) {
                         iterator.remove();
-                        //idGenerator.removeID(currentKey);
                         sb.append("Element with key ").append(currentKey).append(" has been deleted.\n");
                     }
                 }
@@ -199,25 +193,22 @@ public class CollectionManager {
             if (treeMap.isEmpty()) {
                 throw new Exception("The collection is empty.");
             } else {
-                int first = 0;
-                int second = 0;
-                int third = 0;
-                int fourth = 0;
-                for (SpaceMarine sm : treeMap.values()) {
-                    if (sm.getCoordinateX() >= 0) {
-                        if (sm.getCoordinateY() >= 0) {
-                            first += 1;
-                        } else {
-                            fourth += 1;
-                        }
-                    } else {
-                        if (sm.getCoordinateY() >= 0) {
-                            second += 1;
-                        } else {
-                            third += 1;
-                        }
-                    }
-                }
+                long first = treeMap.values().stream()
+                        .filter(sm -> sm.getCoordinateX() >= 0)
+                        .filter(sm -> sm.getCoordinateY() >= 0)
+                        .count();
+                long second = treeMap.values().stream()
+                        .filter(sm -> sm.getCoordinateX() < 0)
+                        .filter(sm -> sm.getCoordinateY() >= 0)
+                        .count();
+                long third = treeMap.values().stream()
+                        .filter(sm -> sm.getCoordinateX() < 0)
+                        .filter(sm -> sm.getCoordinateY() < 0)
+                        .count();
+                long fourth = treeMap.values().stream()
+                        .filter(sm -> sm.getCoordinateX() >= 0)
+                        .filter(sm -> sm.getCoordinateY() < 0)
+                        .count();
                 return "There are " + first + " space marines in the first coordinate quarter, " +
                         "" + second + " in the second one, " + third +
                         " in the third one, " + fourth + " in the fourth one.\n";
@@ -235,19 +226,15 @@ public class CollectionManager {
             String chapterName = chapter.getName();
             String chapterWorld = chapter.getWorld();
             SpaceMarineDescriber smd = new SpaceMarineDescriber();
-            StringBuilder sb = new StringBuilder();
-            sb.append("Elements whose chapter value is equal to entered value:").append("\n");
-            int count = 0;
-            for (SpaceMarine sm : treeMap.values()) {
-                if (sm.getChapterName().equals(chapterName) && sm.getChapterWorld().equals(chapterWorld)) {
-                    sb.append(smd.describe(sm)).append("\n\n");
-                    count += 1;
-                }
+            String marines = treeMap.values().stream()
+                    .filter(sm -> sm.getChapterName().equals(chapterName) && sm.getChapterWorld().equals(chapterWorld))
+                    .map(sm -> smd.describe(sm) + "\n\n")
+                    .collect(Collectors.joining());
+            if (marines.length() > 1) {
+                return "Elements whose chapter value is equal to entered value:\n" + marines;
+            } else {
+                return "There are no elements whose chapter value is equal to entered value.\n";
             }
-            if (count == 0) {
-                sb.append("There are no elements whose chapter value is equal to entered value.");
-            }
-            return sb.toString();
         } catch (Exception e) {
             return e.getMessage() + "\n";
         }
@@ -259,19 +246,15 @@ public class CollectionManager {
                 throw new Exception("The collection is empty.");
             }
             SpaceMarineDescriber smd = new SpaceMarineDescriber();
-            int count = 0;
-            StringBuilder sb = new StringBuilder();
-            sb.append("Elements whose starts with entered value:").append("\n");
-            for (SpaceMarine sm : treeMap.values()) {
-                if (sm.getName().startsWith(name)) {
-                    sb.append(smd.describe(sm)).append("\n\n");
-                    count += 1;
-                }
+            String marines = treeMap.values().stream()
+                    .filter(sm -> sm.getName().startsWith(name))
+                    .map(sm -> smd.describe(sm) + "\n\n")
+                    .collect(Collectors.joining());
+            if (marines.length() > 1) {
+                return "Elements whose starts with entered value:\n" + marines;
+            } else {
+                return "There are no elements whose starts with entered value.\n";
             }
-            if (count == 0) {
-                sb.append("There are no elements whose starts with entered value.\n");
-            }
-            return sb.toString();
         } catch (Exception e) {
             return e.getMessage() + "\n";
         }
@@ -279,16 +262,14 @@ public class CollectionManager {
 
     public String put(SpaceMarine sm) {
         treeMap.put(sm.getID(), sm);
-        //idGenerator.addID(sm.getID());
         return "Space marine " + sm.getName() + " has been added to the collection!" + "\n";
     }
 
-//    public void putWithGeneration(SpaceMarine sm) throws Exception {
-//        sm.setID(idGenerator.generateID());
-//        treeMap.put(sm.getID(), sm);
-//        System.out.println("Space marine " + sm.getName() + " has been added to the collection!");
-//        idGenerator.addID(sm.getID());
-//    }
+    public String remove(Integer key) {
+        String name = treeMap.get(key).getName();
+        treeMap.remove(key);
+        return "Space marine " + name + " has been removed from the collection.\n";
+    }
 
     public void setFile(File file) {
         this.file = file;
