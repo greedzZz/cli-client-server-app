@@ -1,10 +1,13 @@
 package utility.auxiliary;
 
 import commands.*;
-import content.*;
+import content.Chapter;
+import content.SpaceMarine;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.LinkedList;
+import java.util.Scanner;
 
 public class ScriptReader {
     private final ElementReader elementReader;
@@ -20,6 +23,9 @@ public class ScriptReader {
 
     public void readScript(String pathname, CommandSender commandSender, AnswerReceiver answerReceiver) {
         try {
+            if (pathname.matches("(/dev/)\\w*")) {
+                throw new IllegalArgumentException("The script file is not correct.");
+            }
             File file = new File(pathname);
             Scanner scanFile = new Scanner(file);
             String command = "";

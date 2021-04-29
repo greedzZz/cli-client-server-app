@@ -18,7 +18,7 @@ public class ScannerXML {
         this.file = file;
     }
 
-    public void scan() throws FileNotFoundException{
+    public void scan() throws FileNotFoundException {
         try (Scanner scanner = new Scanner(file)) {
             ArrayList<Byte> fileBytes = new ArrayList<>();
             while (scanner.hasNextLine()) {

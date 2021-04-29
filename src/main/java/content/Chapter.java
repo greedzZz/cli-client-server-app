@@ -6,8 +6,8 @@ import java.io.Serializable;
  * Class Chapter.
  */
 public class Chapter implements Serializable {
-    private String name; //Поле не может быть null, Строка не может быть пустой
-    private String world; //Поле не может быть null
+    private final String name; //Поле не может быть null, Строка не может быть пустой
+    private final String world; //Поле не может быть null
 
     public Chapter(String name, String world) throws IllegalArgumentException {
         if (name == null) {

@@ -1,7 +1,9 @@
 package utility.auxiliary;
 
 import java.io.IOException;
-import java.net.*;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.SocketAddress;
 
 public class CommandSender {
     private final DatagramSocket socket;

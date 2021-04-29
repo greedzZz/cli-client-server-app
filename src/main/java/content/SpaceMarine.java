@@ -38,7 +38,6 @@ public class SpaceMarine implements Comparable<SpaceMarine>, Serializable {
             this.weaponType = weaponType;
             this.meleeWeapon = meleeWeapon;
             this.chapter = chapter;
-            //this.creationDate = LocalDateTime.now();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }

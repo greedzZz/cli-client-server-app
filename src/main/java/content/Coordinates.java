@@ -6,8 +6,8 @@ import java.io.Serializable;
  * Class coordinates.
  */
 public class Coordinates implements Serializable {
-    private int x;
-    private Integer y; //Максимальное значение поля: 941, Поле не может быть null
+    private final int x;
+    private final Integer y; //Максимальное значение поля: 941, Поле не может быть null
 
     public Coordinates(Integer x, Integer y) throws IllegalArgumentException {
         if (y == null || y > 941) {

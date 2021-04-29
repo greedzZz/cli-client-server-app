@@ -1,11 +1,15 @@
 package utility;
 
-import content.*;
-import utility.auxiliary.*;
+import content.Chapter;
+import content.SpaceMarine;
+import utility.auxiliary.SpaceMarineDescriber;
 import utility.parsing.ObjectToXMLParser;
 
 import java.io.File;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 /**
@@ -113,7 +117,6 @@ public class CollectionManager {
     public void save() {
         ObjectToXMLParser parser = new ObjectToXMLParser(file);
         parser.parse(treeMap);
-        System.exit(0);
     }
 
     public String executeScript() {
@@ -265,10 +268,9 @@ public class CollectionManager {
         return "Space marine " + sm.getName() + " has been added to the collection!" + "\n";
     }
 
-    public String remove(Integer key) {
-        String name = treeMap.get(key).getName();
-        treeMap.remove(key);
-        return "Space marine " + name + " has been removed from the collection.\n";
+    public void close() {
+        save();
+        System.exit(0);
     }
 
     public void setFile(File file) {

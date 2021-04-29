@@ -1,25 +1,25 @@
 import commands.Command;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import utility.CollectionManager;
 import utility.auxiliary.Serializer;
 import utility.parsing.FileManager;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.*;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.*;
 import java.util.Iterator;
 import java.util.Set;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class Server {
     private SocketAddress address;
     private DatagramChannel channel;
     private Selector selector;
     private final int SERVER_WAITING_TIME = 60 * 60 * 1000;
-    private final int PORT = 5885;
+    private final int PORT = 8725;
     private final Serializer serializer;
     private final Logger logger;
 
@@ -48,7 +48,6 @@ public class Server {
     public Command readRequest() throws IOException, ClassNotFoundException {
         byte[] bytes = new byte[1000000];
         ByteBuffer buffer = ByteBuffer.wrap(bytes);
-        buffer.clear();
         address = channel.receive(buffer);
         logger.info("The server received a new request.");
         return (Command) serializer.deserialize(bytes);
@@ -70,6 +69,7 @@ public class Server {
                 throw new IllegalArgumentException();
             }
             CollectionManager collectionManager = new CollectionManager();
+            Runtime.getRuntime().addShutdownHook(new Thread(collectionManager::save));
             FileManager fileManager = new FileManager(new File(args[0]));
             fileManager.manageXML(collectionManager);
             logger.info("The collection is created based on the contents of the file.");
@@ -79,7 +79,8 @@ public class Server {
                 if (readyChannels == 0) {
                     selector.close();
                     channel.close();
-                    collectionManager.save();
+                    logger.info("Server shutdown.");
+                    collectionManager.close();
                 }
                 Set<SelectionKey> selectedKeys = selector.selectedKeys();
                 Iterator<SelectionKey> keyIterator = selectedKeys.iterator();

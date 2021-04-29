@@ -1,6 +1,7 @@
 package commands;
 
-import content.*;
+import content.Chapter;
+import content.SpaceMarine;
 import utility.CollectionManager;
 
 import java.io.Serializable;
