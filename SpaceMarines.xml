@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Marines>
+    <SpaceMarine>
+        <id>11</id>
+        <name>Zoe</name>
+        <coordinates x="81" y="36"/>
+        <creationDate>2019-01-08T08:14:20</creationDate>
+        <health>15</health>
+        <category>CHAPLAIN</category>
+        <weaponType>COMBI_PLASMA_GUN</weaponType>
+        <meleeWeapon>POWER_BLADE</meleeWeapon>
+        <chapter name="Dead" world="Sun"/>
+    </SpaceMarine>
+    <SpaceMarine>
+        <id>98</id>
+        <name>Alex</name>
+        <coordinates x="4" y="15"/>
+        <creationDate>2014-09-09T22:04:18</creationDate>
+        <health>94</health>
+        <category>TACTICAL</category>
+        <weaponType>PLASMA_GUN</weaponType>
+        <meleeWeapon>CHAIN_AXE</meleeWeapon>
+        <chapter name="War" world="Venus"/>
+    </SpaceMarine>
+    <SpaceMarine>
+        <id>124</id>
+        <name>Mike</name>
+        <coordinates x="7" y="21"/>
+        <creationDate>2007-12-03T10:15:30</creationDate>
+        <health>100</health>
+        <category>ASSAULT</category>
+        <weaponType>BOLTGUN</weaponType>
+        <meleeWeapon>CHAIN_SWORD</meleeWeapon>
+        <chapter name="Peace" world="Earth"/>
+    </SpaceMarine>
+</Marines>
