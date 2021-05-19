@@ -23,7 +23,7 @@ public class FileManager {
         this.file = file;
     }
 
-    public void manageXML(CollectionManager collectionManager) {
+    public void manageXML(CollectionManager collectionManager) throws Exception {
         collectionManager.setFile(file);
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -129,10 +129,9 @@ public class FileManager {
                 collectionManager.put(sm);
             }
         } catch (FileNotFoundException f) {
-            System.out.println(f.getMessage());
+            throw new FileNotFoundException(f.getMessage());
         } catch (Exception e) {
-            System.out.println(e.getMessage());
-            System.out.println("Incorrect data file common.content.\n" +
+            throw new Exception(e.getMessage() + "\nIncorrect data file content.\n" +
                     "Further filling of the collection from this source is impossible.\n" +
                     "Continue to fill in the collection manually or restart the program specifying the correct file.");
         }

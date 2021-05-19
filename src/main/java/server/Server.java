@@ -71,9 +71,13 @@ public class Server {
             }
             CollectionManager collectionManager = new CollectionManager();
             Runtime.getRuntime().addShutdownHook(new Thread(collectionManager::save));
-            FileManager fileManager = new FileManager(new File(args[0]));
-            fileManager.manageXML(collectionManager);
-            logger.info("The collection is created based on the contents of the file.");
+            try {
+                FileManager fileManager = new FileManager(new File(args[0]));
+                fileManager.manageXML(collectionManager);
+                logger.info("The collection is created based on the contents of the file.");
+            } catch (Exception e) {
+                logger.warn(e.getMessage());
+            }
             openChannel();
             while (true) {
                 int readyChannels = selector.select(SERVER_WAITING_TIME);
@@ -100,7 +104,7 @@ public class Server {
         } catch (IllegalArgumentException e) {
             logger.error("There is no file pathname in the command argument or entered pathname is incorrect.");
         } catch (Exception e) {
-            logger.error("Exception: " + e.getMessage());
+            logger.error(e.getMessage());
         }
     }
 }
